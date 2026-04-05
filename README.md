@@ -1,34 +1,62 @@
-# Swinder
+# 🏊 Swinder
 
-**Tinder for swimming pools.** Swipe right on your perfect pool.
+### Tinder. But wet.
 
-Swinder connects swimmers with pool owners, letting you discover, match, and book access to private and semi-private pools near you. Whether you're looking for a quiet lane, a backyard pool to rent for the afternoon, or a place to host a swim session, Swinder makes finding your next swim effortless.
-
----
-
-## Features
-
-- **Swipe to match** — Browse nearby pools with photos, ratings, and amenities. Swipe right to request access, left to pass.
-- **Pool profiles** — Owners list pool specs: length, depth, heating, lane availability, and house rules.
-- **Swimmer profiles** — Swimmers share their experience level, preferred stroke, and availability.
-- **In-app messaging** — Chat with pool owners once you match to coordinate access.
-- **Booking & scheduling** — Request time slots and manage bookings directly in the app.
-- **Reviews** — Rate your swim and leave feedback for pool owners and swimmers alike.
+> *entirely vibe coded on the Claude mobile app. no thoughts, just swipes.*
 
 ---
 
-## Getting Started
+## what is this
 
-> Setup instructions will be added once the stack is chosen and the project is scaffolded.
+you know how tinder exists? and you know how swimming pools exist? 
 
----
+**what if those two things... became one thing.**
 
-## Contributing
-
-Pull requests are welcome. For significant changes, please open an issue first to discuss what you'd like to change.
+swipe right on pools. match with pools. fall in love with pools. get ghosted by pools. the full experience.
 
 ---
 
-## License
+## features (allegedly)
 
-[Unlicense](LICENSE) — public domain.
+- **swipe on pools** — hot or not but make it chlorine
+- **pool profiles** — heated? 50m? can i bring floaties? the things that matter
+- **swimmer profiles** — "former competitive swimmer" (went to one lesson in 2009)
+- **it's a match!** — you and this pool both want to get wet
+- **messaging** — slide into the pool owner's DMs
+- **booking** — secure the bag. secure the lane.
+- **reviews** — "5 stars, very wet, would swim again"
+
+---
+
+## tech stack
+
+lol idk yet. vibes-driven development. we'll figure it out.
+
+---
+
+## how to run
+
+```
+step 1: manifest it
+step 2: there is no step 2
+```
+
+---
+
+## origin story
+
+this entire project was conceived and vibe coded using the **Claude mobile app**. no laptop. no IDE. no adult supervision. just a phone, a dream, and an AI that said "sure why not."
+
+this is what peak software engineering looks like.
+
+---
+
+## contributing
+
+PRs welcome. please maintain the vibe.
+
+---
+
+## license
+
+[Unlicense](LICENSE) — free as a pool on a hot day
