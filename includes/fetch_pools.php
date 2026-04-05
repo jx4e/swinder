@@ -21,7 +21,7 @@ function fetch_pools_near(float $lat, float $lon): int {
     $url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?' . http_build_query([
         'location' => "$lat,$lon",
         'radius'   => 10000,
-        'type'     => 'swimming_pool',
+        'keyword'  => 'swimming pool',
         'key'      => google_api_key(),
     ]);
 
