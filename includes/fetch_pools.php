@@ -14,13 +14,13 @@ function google_api_key(): string {
     return '';
 }
 
-function fetch_pools_near(float $lat, float $lon): int {
+function fetch_pools_near(float $lat, float $lon, int $radius = 10000): int {
     $db = get_db();
     $added = 0;
 
     $url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?' . http_build_query([
         'location' => "$lat,$lon",
-        'radius'   => 10000,
+        'radius'   => $radius,
         'keyword'  => 'public swimming pool leisure centre aquatic',
         'key'      => google_api_key(),
     ]);

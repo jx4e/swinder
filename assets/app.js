@@ -199,6 +199,17 @@ document.addEventListener('keydown', e => {
 const locationLabel  = document.getElementById('location-label');
 const locationStatus = document.getElementById('location-status');
 const cityInput      = document.getElementById('city-input');
+const radiusInput    = document.getElementById('radius-input');
+const radiusLabel    = document.getElementById('radius-label');
+
+radiusInput.addEventListener('input', () => {
+    radiusLabel.textContent = radiusInput.value + ' km';
+    localStorage.setItem('swinder_radius', radiusInput.value);
+});
+
+// Restore saved radius
+const savedRadius = localStorage.getItem('swinder_radius');
+if (savedRadius) { radiusInput.value = savedRadius; radiusLabel.textContent = savedRadius + ' km'; }
 
 function openLocationModal() {
     document.getElementById('location-modal').classList.remove('hidden');
@@ -214,8 +225,9 @@ function closeLocationModal(e) {
 
 async function applyLocation(lat, lon, name) {
     setLocationStatus('⏳ Fetching pools…');
+    const radius = radiusInput.value || 10;
     try {
-        const res  = await fetch(`/api/set_location.php?lat=${lat}&lon=${lon}`);
+        const res  = await fetch(`/api/set_location.php?lat=${lat}&lon=${lon}&radius=${radius}`);
         const data = await res.json();
         // Save to localStorage and reset seen pools
         localStorage.setItem('swinder_lat',  lat);

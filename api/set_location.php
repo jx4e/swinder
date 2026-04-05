@@ -3,8 +3,9 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/fetch_pools.php';
 
-$lat = (float)($_GET['lat'] ?? 0);
-$lon = (float)($_GET['lon'] ?? 0);
+$lat    = (float)($_GET['lat'] ?? 0);
+$lon    = (float)($_GET['lon'] ?? 0);
+$radius = min(50000, max(1000, (int)($_GET['radius'] ?? 10) * 1000)); // km → metres, capped 1–50km
 
 if (!$lat || !$lon) {
     http_response_code(400);
@@ -12,5 +13,5 @@ if (!$lat || !$lon) {
     exit;
 }
 
-$added = fetch_pools_near($lat, $lon);
+$added = fetch_pools_near($lat, $lon, $radius);
 echo json_encode(['ok' => true, 'added' => $added]);

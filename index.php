@@ -29,6 +29,10 @@
                 <input type="text" id="city-input" placeholder="e.g. London, Tokyo, Sydney…" autocomplete="off" />
                 <button id="btn-city-search">Go</button>
             </div>
+            <div class="radius-row">
+                <label for="radius-input">Search radius: <strong id="radius-label">10 km</strong></label>
+                <input type="range" id="radius-input" min="1" max="50" value="10" step="1" />
+            </div>
             <p id="location-status" class="location-status"></p>
         </div>
     </div>
