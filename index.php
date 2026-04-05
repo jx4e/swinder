@@ -9,8 +9,29 @@
 <body>
     <header>
         <h1>🏊 Swinder</h1>
-        <a href="/leaderboard.php">🏆 Rankings</a>
+        <div class="header-right">
+            <button class="btn-location" id="btn-location" onclick="openLocationModal()" title="Change location">
+                📍 <span id="location-label">Vancouver</span>
+            </button>
+            <a href="/leaderboard.php">🏆 Rankings</a>
+        </div>
     </header>
+
+    <!-- Location modal -->
+    <div id="location-modal" class="modal-overlay hidden" onclick="closeLocationModal(event)">
+        <div class="modal-card">
+            <h3>📍 Change location</h3>
+            <button class="btn-geolocate" id="btn-geolocate">
+                🎯 Use my location
+            </button>
+            <div class="modal-divider">or search</div>
+            <div class="city-search-row">
+                <input type="text" id="city-input" placeholder="e.g. London, Tokyo, Sydney…" autocomplete="off" />
+                <button id="btn-city-search">Go</button>
+            </div>
+            <p id="location-status" class="location-status"></p>
+        </div>
+    </div>
 
     <main>
         <div id="card-container">

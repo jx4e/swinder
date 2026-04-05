@@ -194,5 +194,99 @@ document.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft')  swipeLeft();
 });
 
+// ── Location ─────────────────────────────────────────────────────────────────
+
+const locationLabel  = document.getElementById('location-label');
+const locationStatus = document.getElementById('location-status');
+const cityInput      = document.getElementById('city-input');
+
+function openLocationModal() {
+    document.getElementById('location-modal').classList.remove('hidden');
+    cityInput.value = '';
+    locationStatus.textContent = '';
+    cityInput.focus();
+}
+
+function closeLocationModal(e) {
+    if (e && e.target !== document.getElementById('location-modal')) return;
+    document.getElementById('location-modal').classList.add('hidden');
+}
+
+async function applyLocation(lat, lon, name) {
+    setLocationStatus('⏳ Fetching pools…');
+    try {
+        const res  = await fetch(`/api/set_location.php?lat=${lat}&lon=${lon}`);
+        const data = await res.json();
+        // Save to localStorage and reset seen pools
+        localStorage.setItem('swinder_lat',  lat);
+        localStorage.setItem('swinder_lon',  lon);
+        localStorage.setItem('swinder_location', name);
+        localStorage.setItem('swinder_seen', '[]');
+        seenIds.length = 0;
+        locationLabel.textContent = name;
+        document.getElementById('location-modal').classList.add('hidden');
+        await loadNextPool();
+    } catch {
+        setLocationStatus('❌ Something went wrong, try again');
+    }
+}
+
+function setLocationStatus(msg) {
+    locationStatus.textContent = msg;
+}
+
+// Geocode a city name via Nominatim (free, no API key)
+async function geocodeCity(query) {
+    const url = 'https://nominatim.openstreetmap.org/search?' + new URLSearchParams({
+        q: query, format: 'json', limit: 1,
+    });
+    const res  = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+    const data = await res.json();
+    if (!data.length) return null;
+    return {
+        lat:  parseFloat(data[0].lat),
+        lon:  parseFloat(data[0].lon),
+        name: data[0].display_name.split(',').slice(0, 2).join(',').trim(),
+    };
+}
+
+document.getElementById('btn-geolocate').addEventListener('click', () => {
+    if (!navigator.geolocation) {
+        setLocationStatus('❌ Geolocation not supported by your browser');
+        return;
+    }
+    setLocationStatus('⏳ Getting your location…');
+    navigator.geolocation.getCurrentPosition(
+        async pos => {
+            const { latitude: lat, longitude: lon } = pos.coords;
+            // Reverse geocode to get a readable name
+            const res  = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+            const data = await res.json();
+            const name = data.address?.city || data.address?.town || data.address?.county || 'Here';
+            await applyLocation(lat, lon, name);
+        },
+        () => setLocationStatus('❌ Location access denied')
+    );
+});
+
+document.getElementById('btn-city-search').addEventListener('click', searchCity);
+cityInput.addEventListener('keydown', e => { if (e.key === 'Enter') searchCity(); });
+
+async function searchCity() {
+    const query = cityInput.value.trim();
+    if (!query) return;
+    setLocationStatus('⏳ Searching…');
+    const result = await geocodeCity(query);
+    if (!result) {
+        setLocationStatus('❌ City not found, try again');
+        return;
+    }
+    await applyLocation(result.lat, result.lon, result.name);
+}
+
+// Restore saved location label on load
+const savedLocation = localStorage.getItem('swinder_location');
+if (savedLocation) locationLabel.textContent = savedLocation;
+
 // ── Kick things off ──────────────────────────────────────────────────────────
 loadNextPool();
