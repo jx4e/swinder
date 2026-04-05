@@ -143,6 +143,7 @@ function onDragStart(x) {
     if (isSwiping) return;
     isDragging = true;
     startX     = x;
+    currentX   = 0;
     card.style.transition = 'none';
 }
 
