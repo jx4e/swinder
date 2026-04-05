@@ -6,7 +6,11 @@ $_config = __DIR__ . '/../config.php';
 if (file_exists($_config)) require_once $_config;
 
 function google_api_key(): string {
-    return defined('GOOGLE_PLACES_API_KEY') ? GOOGLE_PLACES_API_KEY : (getenv('GOOGLE_PLACES_API_KEY') ?: '');
+    if (defined('GOOGLE_PLACES_API_KEY')) return GOOGLE_PLACES_API_KEY;
+    return $_ENV['GOOGLE_PLACES_API_KEY']
+        ?? $_SERVER['GOOGLE_PLACES_API_KEY']
+        ?? getenv('GOOGLE_PLACES_API_KEY')
+        ?: '';
 }
 
 function fetch_pools_near(float $lat, float $lon): int {
