@@ -21,7 +21,7 @@ function fetch_pools_near(float $lat, float $lon): int {
     $url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?' . http_build_query([
         'location' => "$lat,$lon",
         'radius'   => 10000,
-        'keyword'  => 'swimming pool',
+        'keyword'  => 'public swimming pool leisure centre aquatic',
         'key'      => google_api_key(),
     ]);
 
@@ -31,7 +31,12 @@ function fetch_pools_near(float $lat, float $lon): int {
         return 0;
     }
 
+    // Exclude hotels, lodging, and spas — we want proper public/leisure pools only
+    $excluded_types = ['lodging', 'hotel', 'spa'];
+
     foreach ($response['results'] as $place) {
+        $place_types = $place['types'] ?? [];
+        if (array_intersect($excluded_types, $place_types)) continue;
         $place_id = $place['place_id'];
 
         // Skip if already cached
@@ -47,10 +52,20 @@ function fetch_pools_near(float $lat, float $lon): int {
         ]);
         $details = json_decode(file_get_contents($details_url), true)['result'] ?? [];
 
-        // Resolve photo to a CDN URL (no API key in the final URL)
+        // Pick the best photo — prefer ones tagged as pool/interior over exterior shots.
+        // Try up to 5 photos and use the first one whose HTML attribution mentions "pool".
         $photo_url = null;
-        if (!empty($details['photos'][0]['photo_reference'])) {
-            $photo_url = resolve_photo_url($details['photos'][0]['photo_reference']);
+        $photos = array_slice($details['photos'] ?? [], 0, 5);
+        foreach ($photos as $photo) {
+            $attr = strtolower(strip_tags(implode(' ', $photo['html_attributions'] ?? [])));
+            if (str_contains($attr, 'pool') || str_contains($attr, 'swim') || str_contains($attr, 'leisure')) {
+                $photo_url = resolve_photo_url($photo['photo_reference']);
+                break;
+            }
+        }
+        // Fall back to first photo if none matched
+        if (!$photo_url && !empty($photos[0]['photo_reference'])) {
+            $photo_url = resolve_photo_url($photos[0]['photo_reference']);
         }
 
         $stmt = $db->prepare("

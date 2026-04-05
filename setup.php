@@ -8,6 +8,8 @@ if (!is_dir($data_dir)) {
 }
 
 init_db();
+// Wipe cached pools so refetch picks up the new filters
+get_db()->exec("DELETE FROM pools; DELETE FROM swipes;");
 echo "✅ Database initialised<br>";
 
 $key = google_api_key();
