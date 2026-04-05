@@ -11,7 +11,14 @@ init_db();
 echo "✅ Database initialised<br>";
 
 $key = google_api_key();
-echo "🔑 API key: " . ($key ? substr($key, 0, 6) . '...' . substr($key, -4) : '<strong style="color:red">NOT SET — add GOOGLE_PLACES_API_KEY in Railway Variables</strong>') . "<br>";
+echo "🔑 API key: " . ($key ? substr($key, 0, 6) . '...' . substr($key, -4) : '<strong style="color:red">NOT SET</strong>') . "<br>";
+
+// Debug: show all env var names containing "GOOGLE" or "API"
+$sources = ['$_ENV' => array_keys($_ENV), '$_SERVER' => array_keys($_SERVER)];
+foreach ($sources as $name => $keys) {
+    $matches = array_filter($keys, fn($k) => str_contains(strtoupper($k), 'GOOGLE') || str_contains(strtoupper($k), 'API'));
+    echo "🔍 $name keys matching GOOGLE/API: " . (empty($matches) ? 'none' : implode(', ', $matches)) . "<br>";
+}
 
 $lat = defined('DEFAULT_LAT') ? DEFAULT_LAT : (float)(getenv('DEFAULT_LAT') ?: 51.5074);
 $lon = defined('DEFAULT_LON') ? DEFAULT_LON : (float)(getenv('DEFAULT_LON') ?: -0.1278);
