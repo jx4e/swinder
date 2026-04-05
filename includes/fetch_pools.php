@@ -7,7 +7,11 @@ if (file_exists($_config)) require_once $_config;
 
 function google_api_key(): string {
     if (defined('GOOGLE_PLACES_API_KEY')) return GOOGLE_PLACES_API_KEY;
-    return $_ENV['GOOGLE_PLACES_API_KEY'] ?? $_SERVER['GOOGLE_PLACES_API_KEY'] ?? getenv('GOOGLE_PLACES_API_KEY') ?: '';
+    foreach (['GOOGLE_PLACES_API_KEY', 'GOOGLE_PLACES_API'] as $k) {
+        $v = $_ENV[$k] ?? $_SERVER[$k] ?? getenv($k) ?: '';
+        if ($v) return $v;
+    }
+    return '';
 }
 
 function fetch_pools_near(float $lat, float $lon): int {
