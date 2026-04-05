@@ -262,6 +262,61 @@ main {
     color: var(--muted);
 }
 
+/* ── Shimmer / skeleton ── */
+@keyframes shimmer {
+    0%   { background-position: -600px 0; }
+    100% { background-position:  600px 0; }
+}
+
+.shimmer {
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.03) 0%,
+        rgba(255,255,255,0.09) 50%,
+        rgba(255,255,255,0.03) 100%
+    );
+    background-size: 600px 100%;
+    animation: shimmer 1.4s infinite linear;
+}
+
+/* Card in loading state */
+.card.card-loading .card-image {
+    background-image: none !important;
+}
+.card.card-loading .card-image,
+.card-image.photo-loading {
+    background-color: #1e1e35;
+    background-image: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.03) 0%,
+        rgba(255,255,255,0.09) 50%,
+        rgba(255,255,255,0.03) 100%
+    ) !important;
+    background-size: 600px 100% !important;
+    animation: shimmer 1.4s infinite linear;
+}
+
+/* Skeleton text placeholders */
+.card.card-loading .card-info h2::after,
+.card.card-loading .card-info p::after {
+    content: '';
+    display: block;
+    height: 1em;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.12);
+}
+.card.card-loading .card-info h2::after { width: 60%; margin-bottom: 2px; }
+.card.card-loading .card-info p::after  { width: 80%; }
+.card.card-loading .card-info h2,
+.card.card-loading .card-info p,
+.card.card-loading .pool-meta { color: transparent; }
+
+/* Photo fade-in */
+.card-image {
+    transition: opacity 0.25s ease;
+}
+.card-image.photo-loading { opacity: 0.4; }
+
 /* ── Photo dots ── */
 .photo-dots {
     position: absolute;

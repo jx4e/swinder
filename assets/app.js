@@ -23,6 +23,9 @@ let isSwiping         = false; // prevent double-swipe
 // ── Load a pool ──────────────────────────────────────────────────────────────
 
 async function loadNextPool() {
+    card.classList.add('card-loading');
+    poolName.textContent = poolAddr.textContent = poolRating.textContent = '';
+
     const lat    = localStorage.getItem('swinder_lat')    || 49.2827;
     const lon    = localStorage.getItem('swinder_lon')    || -123.1207;
     const radius = localStorage.getItem('swinder_radius') || 10;
@@ -42,6 +45,7 @@ async function loadNextPool() {
     poolAddr.textContent   = currentPool.address || '';
     poolRating.textContent = currentPool.rating ? '⭐ ' + currentPool.rating : '';
 
+    card.classList.remove('card-loading');
     setPhoto(0);
     renderDots();
 
@@ -64,13 +68,26 @@ function showEmpty() {
 
 function setPhoto(index) {
     const refs = currentPool?.photo_refs ?? [];
-    if (refs.length > 0 && refs[index]) {
-        cardImage.style.backgroundImage = `url('/api/photo.php?ref=${encodeURIComponent(refs[index])}')`;
-    } else if (currentPool?.photo_url) {
-        cardImage.style.backgroundImage = `url('${currentPool.photo_url}')`;
-    } else {
+    const url  = refs[index]
+        ? `/api/photo.php?ref=${encodeURIComponent(refs[index])}`
+        : currentPool?.photo_url || null;
+
+    if (!url) {
         cardImage.style.backgroundImage = 'linear-gradient(135deg, #1a1a4e 0%, #2979ff 100%)';
+        return;
     }
+
+    cardImage.classList.add('photo-loading');
+    const img  = new Image();
+    img.onload = () => {
+        cardImage.style.backgroundImage = `url('${url}')`;
+        cardImage.classList.remove('photo-loading');
+    };
+    img.onerror = () => {
+        cardImage.style.backgroundImage = 'linear-gradient(135deg, #1a1a4e 0%, #2979ff 100%)';
+        cardImage.classList.remove('photo-loading');
+    };
+    img.src = url;
 }
 
 function renderDots() {
