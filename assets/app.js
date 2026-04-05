@@ -23,8 +23,12 @@ let isSwiping         = false; // prevent double-swipe
 // ── Load a pool ──────────────────────────────────────────────────────────────
 
 async function loadNextPool() {
-    const res  = await fetch('/api/next.php?seen=' + seenIds.join(','));
-    const data = await res.json();
+    const lat    = localStorage.getItem('swinder_lat')    || 49.2827;
+    const lon    = localStorage.getItem('swinder_lon')    || -123.1207;
+    const radius = localStorage.getItem('swinder_radius') || 10;
+    const params = new URLSearchParams({ seen: seenIds.join(','), lat, lon, radius });
+    const res    = await fetch('/api/next.php?' + params);
+    const data   = await res.json();
 
     if (!data.pool) {
         showEmpty();

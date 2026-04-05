@@ -19,6 +19,8 @@ function init_db(): void {
             place_id     TEXT    UNIQUE NOT NULL,
             name         TEXT    NOT NULL,
             address      TEXT,
+            lat          REAL,
+            lon          REAL,
             photo_url    TEXT,
             photo_refs   TEXT,
             rating       REAL,

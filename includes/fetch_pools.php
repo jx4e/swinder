@@ -74,14 +74,19 @@ function fetch_pools_near(float $lat, float $lon, int $radius = 10000): int {
         // Resolve the first photo to a CDN URL for fast initial display
         $photo_url = !empty($all_refs) ? resolve_photo_url($all_refs[0]) : null;
 
+        $place_lat = $place['geometry']['location']['lat'] ?? null;
+        $place_lon = $place['geometry']['location']['lng'] ?? null;
+
         $stmt = $db->prepare("
-            INSERT OR IGNORE INTO pools (place_id, name, address, photo_url, photo_refs, rating)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO pools (place_id, name, address, lat, lon, photo_url, photo_refs, rating)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $place_id,
             $details['name'] ?? 'Mystery Pool 🤫',
             $details['formatted_address'] ?? null,
+            $place_lat,
+            $place_lon,
             $photo_url,
             json_encode($all_refs),
             $details['rating'] ?? null,
