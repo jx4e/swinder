@@ -10,6 +10,9 @@ if (!is_dir($data_dir)) {
 init_db();
 echo "✅ Database initialised<br>";
 
-$added = fetch_pools_near(DEFAULT_LAT, DEFAULT_LON);
-echo "🏊 Fetched $added new pools near (" . DEFAULT_LAT . ", " . DEFAULT_LON . ")<br><br>";
+$lat = defined('DEFAULT_LAT') ? DEFAULT_LAT : (float)(getenv('DEFAULT_LAT') ?: 51.5074);
+$lon = defined('DEFAULT_LON') ? DEFAULT_LON : (float)(getenv('DEFAULT_LON') ?: -0.1278);
+
+$added = fetch_pools_near($lat, $lon);
+echo "🏊 Fetched $added new pools near ($lat, $lon)<br><br>";
 echo '<a href="/">→ Start swiping</a> &nbsp; <a href="/leaderboard.php">🏆 Leaderboard</a>';

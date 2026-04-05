@@ -1,6 +1,13 @@
 <?php
 require_once __DIR__ . '/db.php';
-require_once __DIR__ . '/../config.php';
+
+// Load config.php if present (local dev). On Railway, use environment variables.
+$_config = __DIR__ . '/../config.php';
+if (file_exists($_config)) require_once $_config;
+
+function google_api_key(): string {
+    return defined('GOOGLE_PLACES_API_KEY') ? GOOGLE_PLACES_API_KEY : (getenv('GOOGLE_PLACES_API_KEY') ?: '');
+}
 
 function fetch_pools_near(float $lat, float $lon): int {
     $db = get_db();
@@ -10,7 +17,7 @@ function fetch_pools_near(float $lat, float $lon): int {
         'location' => "$lat,$lon",
         'radius'   => 10000,
         'type'     => 'swimming_pool',
-        'key'      => GOOGLE_PLACES_API_KEY,
+        'key'      => google_api_key(),
     ]);
 
     $response = json_decode(file_get_contents($url), true);
@@ -31,7 +38,7 @@ function fetch_pools_near(float $lat, float $lon): int {
         $details_url = 'https://maps.googleapis.com/maps/api/place/details/json?' . http_build_query([
             'place_id' => $place_id,
             'fields'   => 'name,formatted_address,rating,photos',
-            'key'      => GOOGLE_PLACES_API_KEY,
+            'key'      => google_api_key(),
         ]);
         $details = json_decode(file_get_contents($details_url), true)['result'] ?? [];
 
@@ -65,7 +72,7 @@ function resolve_photo_url(string $photo_reference): string {
     $url = 'https://maps.googleapis.com/maps/api/place/photo?' . http_build_query([
         'maxwidth'        => 800,
         'photo_reference' => $photo_reference,
-        'key'             => GOOGLE_PLACES_API_KEY,
+        'key'             => google_api_key(),
     ]);
 
     $ch = curl_init($url);
