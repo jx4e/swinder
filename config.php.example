@@ -6,5 +6,5 @@
 define('GOOGLE_PLACES_API_KEY', 'YOUR_GOOGLE_PLACES_API_KEY_HERE');
 
 // Default location to search for pools (change to your city)
-define('DEFAULT_LAT', 51.5074);  // London
-define('DEFAULT_LON', -0.1278);
+define('DEFAULT_LAT', 49.2827);  // Vancouver
+define('DEFAULT_LON', -123.1207);

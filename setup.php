@@ -23,8 +23,8 @@ foreach ($sources as $name => $keys) {
     echo "🔍 $name keys matching GOOGLE/API: " . (empty($matches) ? 'none' : implode(', ', $matches)) . "<br>";
 }
 
-$lat = defined('DEFAULT_LAT') ? DEFAULT_LAT : (float)(getenv('DEFAULT_LAT') ?: 51.5074);
-$lon = defined('DEFAULT_LON') ? DEFAULT_LON : (float)(getenv('DEFAULT_LON') ?: -0.1278);
+$lat = defined('DEFAULT_LAT') ? DEFAULT_LAT : (float)(getenv('DEFAULT_LAT') ?: 49.2827);
+$lon = defined('DEFAULT_LON') ? DEFAULT_LON : (float)(getenv('DEFAULT_LON') ?: -123.1207);
 
 $added = fetch_pools_near($lat, $lon);
 
