@@ -1,0 +1,10 @@
+<?php
+// Copy this file to config.php and fill in your keys
+// Get a Google Places API key at: https://console.cloud.google.com
+// Enable: Places API
+
+define('GOOGLE_PLACES_API_KEY', 'YOUR_GOOGLE_PLACES_API_KEY_HERE');
+
+// Default location to search for pools (change to your city)
+define('DEFAULT_LAT', 51.5074);  // London
+define('DEFAULT_LON', -0.1278);
