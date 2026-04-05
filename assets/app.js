@@ -86,7 +86,10 @@ function cyclePhoto(e) {
     if (isDragging || isSwiping) return;
     const refs = currentPool?.photo_refs ?? [];
     if (refs.length <= 1) return;
-    currentPhotoIndex = (currentPhotoIndex + 1) % refs.length;
+    const goBack = e.clientX < cardImage.getBoundingClientRect().left + cardImage.offsetWidth / 2;
+    currentPhotoIndex = goBack
+        ? (currentPhotoIndex - 1 + refs.length) % refs.length
+        : (currentPhotoIndex + 1) % refs.length;
     setPhoto(currentPhotoIndex);
     renderDots();
 }
