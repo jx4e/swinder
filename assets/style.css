@@ -123,6 +123,30 @@ main {
     color: var(--muted);
 }
 
+/* ── Photo dots ── */
+.photo-dots {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.45);
+    transition: background 0.2s;
+}
+
+.dot.active {
+    background: #fff;
+}
+
 /* ── Swipe stamps ── */
 .stamp {
     position: absolute;

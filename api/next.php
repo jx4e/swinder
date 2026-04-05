@@ -10,7 +10,7 @@ $db = get_db();
 if ($seen_ids) {
     $placeholders = implode(',', array_fill(0, count($seen_ids), '?'));
     $stmt = $db->prepare("
-        SELECT id, name, address, photo_url, rating
+        SELECT id, name, address, photo_url, photo_refs, rating
         FROM pools
         WHERE id NOT IN ($placeholders)
         ORDER BY RANDOM()
@@ -19,7 +19,7 @@ if ($seen_ids) {
     $stmt->execute($seen_ids);
 } else {
     $stmt = $db->query("
-        SELECT id, name, address, photo_url, rating
+        SELECT id, name, address, photo_url, photo_refs, rating
         FROM pools
         ORDER BY RANDOM()
         LIMIT 1
@@ -27,4 +27,7 @@ if ($seen_ids) {
 }
 
 $pool = $stmt->fetch();
+if ($pool) {
+    $pool['photo_refs'] = json_decode($pool['photo_refs'] ?? '[]', true) ?: [];
+}
 echo json_encode(['pool' => $pool ?: null]);

@@ -20,6 +20,7 @@ function init_db(): void {
             name         TEXT    NOT NULL,
             address      TEXT,
             photo_url    TEXT,
+            photo_refs   TEXT,
             rating       REAL,
             swipe_rights INTEGER NOT NULL DEFAULT 0,
             swipe_lefts  INTEGER NOT NULL DEFAULT 0

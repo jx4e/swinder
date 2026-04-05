@@ -17,7 +17,9 @@
             <div id="card" class="card">
                 <div id="like-stamp" class="stamp like">SPLASH 💦</div>
                 <div id="nope-stamp" class="stamp nope">NOPE 🏃</div>
-                <div class="card-image" id="card-image"></div>
+                <div class="card-image" id="card-image">
+                    <div class="photo-dots" id="photo-dots"></div>
+                </div>
                 <div class="card-info">
                     <h2 id="pool-name">Loading pools...</h2>
                     <p id="pool-address"></p>

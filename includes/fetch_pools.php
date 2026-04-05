@@ -52,37 +52,38 @@ function fetch_pools_near(float $lat, float $lon): int {
         ]);
         $details = json_decode(file_get_contents($details_url), true)['result'] ?? [];
 
-        // Try all available photos (up to 10) and pick one whose attribution
-        // suggests it shows the actual pool rather than the building exterior.
+        // Collect up to 10 photo references for cycling.
+        // Try to lead with a photo whose attribution suggests it shows the pool.
         $pool_keywords = ['pool', 'swim', 'lane', 'aqua', 'water', 'leisure', 'indoor', 'interior'];
-        $photo_url = null;
-        $first_photo_ref = null;
-        foreach (array_slice($details['photos'] ?? [], 0, 10) as $i => $photo) {
-            if ($i === 0) $first_photo_ref = $photo['photo_reference'];
+        $all_refs = array_column(array_slice($details['photos'] ?? [], 0, 10), 'photo_reference');
+        $best_ref = null;
+        foreach (array_slice($details['photos'] ?? [], 0, 10) as $photo) {
             $attr = strtolower(strip_tags(implode(' ', $photo['html_attributions'] ?? [])));
             foreach ($pool_keywords as $kw) {
                 if (str_contains($attr, $kw)) {
-                    $photo_url = resolve_photo_url($photo['photo_reference']);
+                    $best_ref = $photo['photo_reference'];
                     break 2;
                 }
             }
         }
-        // If no pool-specific photo found, skip the photo entirely (null = gradient shown in UI).
-        // Better to show no photo than a misleading building exterior.
-        if (!$photo_url && $first_photo_ref) {
-            // Use the first photo as a last resort but accept it may be the building
-            $photo_url = resolve_photo_url($first_photo_ref);
+        // Reorder so the best photo comes first
+        if ($best_ref && $best_ref !== ($all_refs[0] ?? null)) {
+            $all_refs = array_merge([$best_ref], array_filter($all_refs, fn($r) => $r !== $best_ref));
         }
 
+        // Resolve the first photo to a CDN URL for fast initial display
+        $photo_url = !empty($all_refs) ? resolve_photo_url($all_refs[0]) : null;
+
         $stmt = $db->prepare("
-            INSERT OR IGNORE INTO pools (place_id, name, address, photo_url, rating)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO pools (place_id, name, address, photo_url, photo_refs, rating)
+            VALUES (?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $place_id,
             $details['name'] ?? 'Mystery Pool 🤫',
             $details['formatted_address'] ?? null,
             $photo_url,
+            json_encode($all_refs),
             $details['rating'] ?? null,
         ]);
 

@@ -7,9 +7,10 @@ if (!is_dir($data_dir)) {
     mkdir($data_dir, 0755, true);
 }
 
+// Drop and recreate tables to pick up any schema changes
+get_db()->exec("DROP TABLE IF EXISTS pools; DROP TABLE IF EXISTS swipes;");
 init_db();
-// Wipe cached pools so refetch picks up the new filters
-get_db()->exec("DELETE FROM pools; DELETE FROM swipes;");
+// (tables freshly created above)
 echo "✅ Database initialised<br>";
 
 $key = google_api_key();

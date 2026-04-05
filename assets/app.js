@@ -13,11 +13,12 @@ const buttons    = document.getElementById('buttons');
 // Persist seen pool IDs across page refreshes so users don't see repeats
 const seenIds = JSON.parse(localStorage.getItem('swinder_seen') || '[]');
 
-let currentPool = null;
-let isDragging  = false;
-let startX      = 0;
-let currentX    = 0;
-let isSwiping   = false; // prevent double-swipe
+let currentPool       = null;
+let currentPhotoIndex = 0;
+let isDragging        = false;
+let startX            = 0;
+let currentX          = 0;
+let isSwiping         = false; // prevent double-swipe
 
 // ── Load a pool ──────────────────────────────────────────────────────────────
 
@@ -30,15 +31,15 @@ async function loadNextPool() {
         return;
     }
 
-    currentPool = data.pool;
+    currentPool       = data.pool;
+    currentPhotoIndex = 0;
 
     poolName.textContent   = currentPool.name;
     poolAddr.textContent   = currentPool.address || '';
     poolRating.textContent = currentPool.rating ? '⭐ ' + currentPool.rating : '';
 
-    cardImage.style.backgroundImage = currentPool.photo_url
-        ? `url('${currentPool.photo_url}')`
-        : 'linear-gradient(135deg, #1a1a4e 0%, #2979ff 100%)';
+    setPhoto(0);
+    renderDots();
 
     // Reset card
     card.style.transition = 'none';
@@ -54,6 +55,39 @@ function showEmpty() {
     buttons.classList.add('hidden');
     emptyState.classList.remove('hidden');
 }
+
+// ── Photo cycling ────────────────────────────────────────────────────────────
+
+function setPhoto(index) {
+    const refs = currentPool?.photo_refs ?? [];
+    if (refs.length > 0 && refs[index]) {
+        cardImage.style.backgroundImage = `url('/api/photo.php?ref=${encodeURIComponent(refs[index])}')`;
+    } else if (currentPool?.photo_url) {
+        cardImage.style.backgroundImage = `url('${currentPool.photo_url}')`;
+    } else {
+        cardImage.style.backgroundImage = 'linear-gradient(135deg, #1a1a4e 0%, #2979ff 100%)';
+    }
+}
+
+function renderDots() {
+    const dotsEl = document.getElementById('photo-dots');
+    const count  = currentPool?.photo_refs?.length ?? 0;
+    if (count <= 1) { dotsEl.innerHTML = ''; return; }
+    dotsEl.innerHTML = Array.from({ length: count }, (_, i) =>
+        `<span class="dot ${i === currentPhotoIndex ? 'active' : ''}"></span>`
+    ).join('');
+}
+
+function cyclePhoto(e) {
+    if (isDragging || isSwiping) return;
+    const refs = currentPool?.photo_refs ?? [];
+    if (refs.length <= 1) return;
+    currentPhotoIndex = (currentPhotoIndex + 1) % refs.length;
+    setPhoto(currentPhotoIndex);
+    renderDots();
+}
+
+cardImage.addEventListener('click', cyclePhoto);
 
 // ── Record a swipe ───────────────────────────────────────────────────────────
 
