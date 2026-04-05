@@ -47,25 +47,31 @@ function fetch_pools_near(float $lat, float $lon): int {
         // Fetch place details + photo reference
         $details_url = 'https://maps.googleapis.com/maps/api/place/details/json?' . http_build_query([
             'place_id' => $place_id,
-            'fields'   => 'name,formatted_address,rating,photos',
+            'fields'   => 'name,formatted_address,rating,photos,types',
             'key'      => google_api_key(),
         ]);
         $details = json_decode(file_get_contents($details_url), true)['result'] ?? [];
 
-        // Pick the best photo — prefer ones tagged as pool/interior over exterior shots.
-        // Try up to 5 photos and use the first one whose HTML attribution mentions "pool".
+        // Try all available photos (up to 10) and pick one whose attribution
+        // suggests it shows the actual pool rather than the building exterior.
+        $pool_keywords = ['pool', 'swim', 'lane', 'aqua', 'water', 'leisure', 'indoor', 'interior'];
         $photo_url = null;
-        $photos = array_slice($details['photos'] ?? [], 0, 5);
-        foreach ($photos as $photo) {
+        $first_photo_ref = null;
+        foreach (array_slice($details['photos'] ?? [], 0, 10) as $i => $photo) {
+            if ($i === 0) $first_photo_ref = $photo['photo_reference'];
             $attr = strtolower(strip_tags(implode(' ', $photo['html_attributions'] ?? [])));
-            if (str_contains($attr, 'pool') || str_contains($attr, 'swim') || str_contains($attr, 'leisure')) {
-                $photo_url = resolve_photo_url($photo['photo_reference']);
-                break;
+            foreach ($pool_keywords as $kw) {
+                if (str_contains($attr, $kw)) {
+                    $photo_url = resolve_photo_url($photo['photo_reference']);
+                    break 2;
+                }
             }
         }
-        // Fall back to first photo if none matched
-        if (!$photo_url && !empty($photos[0]['photo_reference'])) {
-            $photo_url = resolve_photo_url($photos[0]['photo_reference']);
+        // If no pool-specific photo found, skip the photo entirely (null = gradient shown in UI).
+        // Better to show no photo than a misleading building exterior.
+        if (!$photo_url && $first_photo_ref) {
+            // Use the first photo as a last resort but accept it may be the building
+            $photo_url = resolve_photo_url($first_photo_ref);
         }
 
         $stmt = $db->prepare("
