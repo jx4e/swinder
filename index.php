@@ -48,12 +48,21 @@
                     <div class="pool-meta">
                         <span id="pool-rating"></span>
                     </div>
+                    <div class="reaction-bar" id="reaction-bar"></div>
                 </div>
             </div>
             <div id="empty-state" class="hidden">
                 <div class="empty-emoji">🌊</div>
                 <p>you've swiped on every pool.<br>go outside.</p>
                 <a href="/leaderboard.php">see the rankings →</a>
+            </div>
+        </div>
+
+        <div class="reaction-picker hidden" id="reaction-picker">
+            <div class="reaction-picker-inner">
+                <?php foreach (['💦','🔥','🥶','🤢','💎','🏆','😱','🦆'] as $e): ?>
+                <button class="react-btn" onclick="sendReaction('<?= $e ?>')"><?= $e ?></button>
+                <?php endforeach; ?>
             </div>
         </div>
 
@@ -65,6 +74,10 @@
             <button id="btn-like" onclick="swipeRight()">
                 <span class="btn-icon">💦</span>
                 <span class="btn-label">Splash</span>
+            </button>
+            <button id="btn-react" onclick="toggleReactionPicker()">
+                <span class="btn-icon">😄</span>
+                <span class="btn-label">React</span>
             </button>
         </div>
     </main>

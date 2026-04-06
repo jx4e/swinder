@@ -48,6 +48,9 @@ async function loadNextPool() {
     card.classList.remove('card-loading');
     setPhoto(0);
     renderDots();
+    renderReactionBar(currentPool.reactions);
+    reactionPicker.classList.add('hidden');
+    btnReact.classList.remove('active');
 
     // Reset card
     card.style.transition = 'none';
@@ -165,6 +168,8 @@ function onDragStart(x) {
     startX     = x;
     currentX   = 0;
     card.style.transition = 'none';
+    reactionPicker.classList.add('hidden');
+    btnReact.classList.remove('active');
 }
 
 function onDragMove(x) {
@@ -218,6 +223,60 @@ document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') swipeRight();
     if (e.key === 'ArrowLeft')  swipeLeft();
 });
+
+// ── Reactions ────────────────────────────────────────────────────────────────
+
+const reactionBar    = document.getElementById('reaction-bar');
+const reactionPicker = document.getElementById('reaction-picker');
+const btnReact       = document.getElementById('btn-react');
+
+function toggleReactionPicker() {
+    const open = reactionPicker.classList.toggle('hidden');
+    btnReact.classList.toggle('active', !open);
+}
+
+function renderReactionBar(reactions) {
+    reactionBar.innerHTML = '';
+    (reactions || []).forEach(r => {
+        const pill = document.createElement('div');
+        pill.className = 'reaction-pill';
+        pill.innerHTML = `<span class="pill-emoji">${r.emoji}</span><span class="pill-count">${r.count}</span>`;
+        reactionBar.appendChild(pill);
+    });
+}
+
+function spawnFloatingEmoji(emoji) {
+    const container = document.getElementById('card-container');
+    const count = 3 + Math.floor(Math.random() * 3); // 3-5 bursts
+    for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+            const el = document.createElement('div');
+            el.className = 'floating-emoji';
+            el.textContent = emoji;
+            el.style.left   = (30 + Math.random() * 40) + '%';
+            el.style.fontSize = (1.4 + Math.random() * 0.8) + 'rem';
+            el.style.animationDuration = (1.1 + Math.random() * 0.5) + 's';
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 1800);
+        }, i * 120);
+    }
+}
+
+async function sendReaction(emoji) {
+    if (!currentPool) return;
+    reactionPicker.classList.add('hidden');
+    btnReact.classList.remove('active');
+
+    spawnFloatingEmoji(emoji);
+
+    const res  = await fetch('/api/react.php', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ pool_id: currentPool.id, emoji }),
+    });
+    const data = await res.json();
+    if (data.reactions) renderReactionBar(data.reactions);
+}
 
 // ── Location ─────────────────────────────────────────────────────────────────
 

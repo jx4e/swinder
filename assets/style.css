@@ -600,5 +600,92 @@ main.leaderboard h2 {
     text-decoration: none;
 }
 
+/* ── Reaction bar (on card) ── */
+.reaction-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    min-height: 0;
+}
+
+.reaction-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 3px 10px 3px 6px;
+    font-size: 0.85rem;
+    backdrop-filter: blur(4px);
+    animation: pillPop 0.25s ease;
+}
+
+.reaction-pill .pill-emoji { font-size: 1rem; line-height: 1; }
+.reaction-pill .pill-count { font-weight: 700; font-size: 0.78rem; color: rgba(255,255,255,0.85); }
+
+@keyframes pillPop {
+    0%   { transform: scale(0.6); opacity: 0; }
+    70%  { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* ── Reaction picker ── */
+.reaction-picker {
+    width: 100%;
+    max-width: 380px;
+}
+
+.reaction-picker-inner {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(30, 30, 50, 0.95);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 8px 10px;
+    backdrop-filter: blur(12px);
+    animation: pickerSlide 0.2s ease;
+}
+
+@keyframes pickerSlide {
+    from { transform: translateY(12px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.react-btn {
+    background: none;
+    border: none;
+    font-size: 1.7rem;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 10px;
+    transition: transform 0.15s;
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+}
+.react-btn:hover  { transform: scale(1.25); }
+.react-btn:active { transform: scale(0.9); }
+
+#btn-react { color: var(--text); }
+#btn-react.active { color: #ffd740; }
+
+/* ── Floating emoji burst ── */
+@keyframes floatUp {
+    0%   { transform: translateY(0)     scale(0.8) rotate(0deg);   opacity: 1; }
+    60%  { transform: translateY(-140px) scale(1.4) rotate(10deg); opacity: 1; }
+    100% { transform: translateY(-220px) scale(0.9) rotate(-5deg); opacity: 0; }
+}
+
+.floating-emoji {
+    position: absolute;
+    bottom: 80px;
+    pointer-events: none;
+    z-index: 30;
+    animation: floatUp 1.3s ease-out forwards;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+    font-size: 2rem;
+}
+
 /* ── Utilities ── */
 .hidden { display: none !important; }

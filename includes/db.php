@@ -33,5 +33,11 @@ function init_db(): void {
             direction  TEXT    NOT NULL CHECK (direction IN ('left', 'right')),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
+        CREATE TABLE IF NOT EXISTS reactions (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            pool_id    INTEGER NOT NULL,
+            emoji      TEXT    NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
     ");
 }

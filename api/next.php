@@ -45,5 +45,17 @@ $stmt->execute($params);
 $pool = $stmt->fetch();
 if ($pool) {
     $pool['photo_refs'] = json_decode($pool['photo_refs'] ?? '[]', true) ?: [];
+
+    // Attach top reaction counts
+    $r = $db->prepare("
+        SELECT emoji, COUNT(*) as count
+        FROM reactions
+        WHERE pool_id = ?
+        GROUP BY emoji
+        ORDER BY count DESC
+        LIMIT 8
+    ");
+    $r->execute([$pool['id']]);
+    $pool['reactions'] = $r->fetchAll();
 }
 echo json_encode(['pool' => $pool ?: null]);
