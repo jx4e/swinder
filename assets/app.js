@@ -278,6 +278,118 @@ async function sendReaction(emoji) {
     if (data.reactions) renderReactionBar(data.reactions);
 }
 
+// ── Search ───────────────────────────────────────────────────────────────────
+
+const searchModal   = document.getElementById('search-modal');
+const searchInput   = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+let searchTimer     = null;
+
+function openSearchModal() {
+    searchModal.classList.remove('hidden');
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+    searchInput.focus();
+}
+
+function closeSearchModal(e) {
+    if (e && e.target !== searchModal) return;
+    searchModal.classList.add('hidden');
+}
+
+searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    const q = searchInput.value.trim();
+    if (q.length < 2) { searchResults.innerHTML = ''; return; }
+    searchResults.innerHTML = '<div class="search-loading">⏳ Searching…</div>';
+    searchTimer = setTimeout(() => runSearch(q), 400);
+});
+
+searchInput.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeSearchModal(null);
+});
+
+async function runSearch(q) {
+    const res  = await fetch('/api/search.php?q=' + encodeURIComponent(q));
+    const data = await res.json();
+    renderSearchResults(data.results || []);
+}
+
+function renderSearchResults(results) {
+    if (!results.length) {
+        searchResults.innerHTML = '<div class="search-empty">No pools found 🤷</div>';
+        return;
+    }
+    searchResults.innerHTML = results.map(pool => {
+        const score = pool.score !== null && pool.score !== undefined
+            ? `<span class="sr-score ${scoreClass(pool.score)}">${pool.score}%</span>`
+            : pool.rating ? `<span class="sr-rating">⭐ ${pool.rating}</span>` : '';
+        return `
+        <div class="search-result" onclick="selectSearchResult(${pool.id})">
+            ${pool.photo_url ? `<img src="${pool.photo_url}" class="sr-thumb" alt="">` : '<div class="sr-thumb sr-thumb-placeholder">🏊</div>'}
+            <div class="sr-info">
+                <div class="sr-name">${pool.name}</div>
+                <div class="sr-addr">${pool.address || ''}</div>
+            </div>
+            ${score}
+        </div>`;
+    }).join('');
+}
+
+function scoreClass(score) {
+    if (score >= 60) return 'score-green';
+    if (score >= 40) return 'score-orange';
+    return 'score-red';
+}
+
+async function selectSearchResult(poolId) {
+    searchModal.classList.add('hidden');
+
+    // Fetch the full pool object (with photo_refs and reactions)
+    const lat    = localStorage.getItem('swinder_lat')    || 49.2827;
+    const lon    = localStorage.getItem('swinder_lon')    || -123.1207;
+    const radius = 99999; // ignore location filter — show whatever was selected
+    const res    = await fetch(`/api/next.php?seen=&lat=${lat}&lon=${lon}&radius=${radius}&pool_id=${poolId}`);
+    // pool_id not supported yet — load via direct query workaround:
+    // Instead, just fetch fresh pool data from search results
+    const res2   = await fetch('/api/search.php?q=id:' + poolId);
+    // Simplest approach: re-use the result we already have from the search list
+    showPoolById(poolId);
+}
+
+async function showPoolById(id) {
+    card.classList.add('card-loading');
+    poolName.textContent = poolAddr.textContent = poolRating.textContent = '';
+
+    const res  = await fetch('/api/pool.php?id=' + id);
+    const data = await res.json();
+    if (!data.pool) return;
+
+    currentPool = data.pool;
+    currentPool.photo_refs = data.pool.photo_refs || [];
+    currentPhotoIndex = 0;
+
+    poolName.textContent   = currentPool.name;
+    poolAddr.textContent   = currentPool.address || '';
+    poolRating.textContent = currentPool.rating ? '⭐ ' + currentPool.rating : '';
+
+    card.classList.remove('card-loading');
+    emptyState.classList.add('hidden');
+    buttons.classList.remove('hidden');
+    card.classList.remove('hidden');
+    card.style.transition = 'none';
+    card.style.transform  = 'translateX(0) rotate(0deg)';
+    likeStamp.style.opacity = '0';
+    nopeStamp.style.opacity = '0';
+    isSwiping = false;
+
+    setPhoto(0);
+    renderDots();
+    renderReactionBar(currentPool.reactions || []);
+    reactionPicker.classList.add('hidden');
+    btnReact.classList.remove('active');
+}
+
 // ── Location ─────────────────────────────────────────────────────────────────
 
 const locationLabel  = document.getElementById('location-label');

@@ -9,10 +9,24 @@
 <body>
     <header>
         <h1>🏊 Swinder</h1>
-        <button class="btn-location" id="btn-location" onclick="openLocationModal()" title="Change location">
-            📍 <span id="location-label">Vancouver</span>
-        </button>
+        <div class="header-right">
+            <button class="btn-icon-header" onclick="openSearchModal()" title="Search pools">🔍</button>
+            <button class="btn-location" id="btn-location" onclick="openLocationModal()" title="Change location">
+                📍 <span id="location-label">Vancouver</span>
+            </button>
+        </div>
     </header>
+
+    <!-- Search modal -->
+    <div id="search-modal" class="modal-overlay hidden" onclick="closeSearchModal(event)">
+        <div class="modal-card search-modal-card">
+            <div class="search-input-row">
+                <span class="search-icon-inner">🔍</span>
+                <input type="text" id="search-input" placeholder="Search any pool worldwide…" autocomplete="off" />
+            </div>
+            <div id="search-results" class="search-results"></div>
+        </div>
+    </div>
 
     <!-- Location modal -->
     <div id="location-modal" class="modal-overlay hidden" onclick="closeLocationModal(event)">

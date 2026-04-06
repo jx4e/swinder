@@ -113,6 +113,124 @@ body { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
 }
 .btn-location:hover { background: rgba(255,255,255,0.08); }
 
+/* ── Header icon button ── */
+.btn-icon-header {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+    transition: transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+}
+.btn-icon-header:active { transform: scale(0.88); }
+
+/* ── Search modal ── */
+.search-modal-card {
+    padding: 16px 16px 24px;
+    max-height: 80dvh;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.search-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 10px 14px;
+}
+
+.search-icon-inner { font-size: 1.1rem; flex-shrink: 0; }
+
+.search-input-row input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1rem;
+    outline: none;
+}
+.search-input-row input::placeholder { color: var(--muted); }
+
+.search-results {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.search-loading,
+.search-empty {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: 20px 0;
+}
+
+.search-result {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+    transition: background 0.15s;
+    -webkit-tap-highlight-color: transparent;
+}
+.search-result:hover { background: rgba(255,255,255,0.1); }
+.search-result:active { transform: scale(0.98); }
+
+.sr-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #2a2a4a;
+}
+.sr-thumb-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.sr-info {
+    flex: 1;
+    min-width: 0;
+}
+.sr-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.sr-addr {
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+.sr-score, .sr-rating {
+    font-weight: 800;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.score-green  { color: #00e676; }
+.score-orange { color: #ffab40; }
+.score-red    { color: #ff1744; }
+.sr-rating    { color: var(--muted); }
+
 /* ── Location modal ── */
 .modal-overlay {
     position: fixed;
