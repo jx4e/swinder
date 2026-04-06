@@ -92,11 +92,7 @@ $pools = $db->query("
 </head>
 <body>
 <header>
-    <h1>🏊 Swinder</h1>
-    <div class="header-right">
-        <a href="/">← Swipe</a>
-        <a href="/leaderboard.php">🏆 Rankings</a>
-    </div>
+    <h1>🗺️ Pool Map</h1>
 </header>
 
 <main class="map-page">
@@ -181,5 +177,6 @@ pools.forEach(pool => {
      .bindPopup(popup, { maxWidth: 220 });
 });
 </script>
+<?php require_once __DIR__ . '/includes/nav.php'; ?>
 </body>
 </html>

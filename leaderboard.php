@@ -33,8 +33,7 @@ $total_pools  = $db->query("SELECT COUNT(*) FROM pools")->fetchColumn();
 </head>
 <body>
     <header>
-        <h1>🏊 Swinder</h1>
-        <a href="/">← Swipe</a>
+        <h1>🏆 Rankings</h1>
     </header>
 
     <main class="leaderboard">
@@ -95,5 +94,6 @@ $total_pools  = $db->query("SELECT COUNT(*) FROM pools")->fetchColumn();
             <?php endif; ?>
         </section>
     </main>
+    <?php require_once __DIR__ . '/includes/nav.php'; ?>
 </body>
 </html>
