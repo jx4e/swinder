@@ -3,8 +3,8 @@
 require_once __DIR__ . '/../includes/fetch_pools.php';
 
 $ref = $_GET['ref'] ?? '';
-// Photo references are long alphanumeric strings — reject anything that doesn't look right
-if (!$ref || !preg_match('/^[A-Za-z0-9_\-]+$/', $ref)) {
+// Sanity-check only: non-empty, not absurdly long, no null bytes
+if (!$ref || strlen($ref) > 5000 || str_contains($ref, "\0")) {
     http_response_code(400);
     exit;
 }
