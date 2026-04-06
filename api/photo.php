@@ -26,6 +26,8 @@ curl_close($ch);
 
 if (!$data || $status !== 200) {
     http_response_code(502);
+    header('Content-Type: application/json');
+    echo json_encode(['status' => $status, 'type' => $type, 'ref_len' => strlen($ref), 'curl_error' => curl_error($ch ?? null)]);
     exit;
 }
 
