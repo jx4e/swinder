@@ -1,4 +1,4 @@
-# 🏊‍♂️💦 Swinder 💦🏊‍♀️
+# 🏊💦 Swinder 💦🏊
 
 ### 🔥 Tinder. But wet. 💧
 
@@ -16,29 +16,49 @@ swipe right on pools 👉 match with pools 💞 fall in love with pools 😍 get
 
 ---
 
-## ⚡ features (allegedly)
+## ⚡ features
 
 - 👈👉 **swipe on pools** — hot or not but make it chlorine ☢️
-- 🏠 **pool profiles** — heated? 🌡️ 50m? 📏 can i bring floaties? 🦆 the things that matter
-- 🥽 **swimmer profiles** — "former competitive swimmer" 🏅 (went to one lesson in 2009 😭)
-- 💥 **it's a match!** — you and this pool both want to get wet 🫠
-- 💬 **messaging** — slide into the pool owner's DMs 📩
-- 📅 **booking** — secure the bag 💼 secure the lane 🏁
-- ⭐ **reviews** — "5 stars, very wet, would swim again" 🌊
+- 🔍 **search any pool** — find a specific pool worldwide, ignores your location filter
+- 📍 **location picker** — search by city, use GPS, set your radius (1–50 km)
+- 🗺️ **pool map** — see every pool you've rated plotted on a map, colour-coded by score
+- 🏆 **leaderboard** — hottest 🔥 and cursed 💀 pools ranked by global swipe ratio
+- 📸 **photo cycling** — tap left/right on the card image to browse all pool photos
+- 😄 **emoji reactions** — react with 💦🔥🥶🤢💎🏆😱🦆, watch them float away
+- ⭐ **real pool data** — pulled live from Google Places with actual photos and ratings
+- 💾 **smart caching** — pools cached in SQLite so the API only gets hit once per venue
 
 ---
 
 ## 🛠️ tech stack
 
-lol idk yet 😭 vibes-driven development ✨ we'll figure it out 🤷
+vanilla PHP 🐘 + SQLite 🗄️ + Google Places API 📍 + Leaflet 🗺️
+
+no framework. vibes-driven development. we'll figure it out 🤷
 
 ---
 
-## 🚀 how to run
+## 🚀 deploying on Railway
 
-```
-step 1: manifest it 🧘
-step 2: there is no step 2 🕳️
+1. Fork this repo
+2. Connect to **railway.app** → New Project → Deploy from GitHub
+3. Add environment variable: `GOOGLE_PLACES_API_KEY`
+4. Add a persistent volume mounted at `/app/data`
+5. Visit `/setup.php` to initialise the DB and fetch your first batch of pools
+6. Start swiping 🏊
+
+> You'll need a Google Places API key from [console.cloud.google.com](https://console.cloud.google.com). Enable the **Places API**. The $200/month free credit covers this easily for personal use.
+
+---
+
+## 💻 running locally
+
+```bash
+cp config.php.example config.php
+# add your Google Places API key to config.php
+
+php -S localhost:8000
+# visit localhost:8000/setup.php, then localhost:8000
 ```
 
 ---
