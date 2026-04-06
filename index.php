@@ -13,6 +13,7 @@
             <button class="btn-location" id="btn-location" onclick="openLocationModal()" title="Change location">
                 📍 <span id="location-label">Vancouver</span>
             </button>
+            <a href="/map.php">🗺️ Map</a>
             <a href="/leaderboard.php">🏆 Rankings</a>
         </div>
     </header>
